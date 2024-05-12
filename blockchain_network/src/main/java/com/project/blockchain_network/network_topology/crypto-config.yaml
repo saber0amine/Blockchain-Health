@@ -1,0 +1,17 @@
+OrdererOrgs:
+  - Name: OrdererOrg
+    Domain: example.com
+
+PeerOrgs:
+  - Name: Hospital1
+    Domain: hospital1.example.com
+    Template:
+      Count: 1
+  - Name: Hospital2
+    Domain: hospital2.example.com
+    Template:
+      Count: 1
+  - Name: Hospital3
+    Domain: hospital3.example.com
+    Template:
+      Count: 1
