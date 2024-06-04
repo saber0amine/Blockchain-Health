@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8081:8080"
+    networks:
+      - backend
+    depends_on:
+      - db
+
+  db-backup:
+    image: postgres:latest
+    volumes:
+      - db-backup-data:/var/lib/postgresql/data
+      - ./backup:/backup
+    entrypoint: >
+      bash -c 'while true; do
+      pg_dump -U myuser -h db mydatabase > /backup/dump_$(date +%d-%m-%Y"_"%H_%M_%S).sql;
+      sleep 86400;
+      done'
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    networks:
+      - backend
+    depends_on:
+      - db
+
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydatabase
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    networks:
+      - backend
+    depends_on:
+      - db
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  db-data:
+  db-backup-data:
+
