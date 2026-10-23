@@ -11,9 +11,9 @@ import org.hyperledger.fabric_ca.sdk.exception.RegistrationException;
 public class CryptoMaterialGenerator {
 
     // CA server connection parameters
-    private static final String CA_URL = "http://localhost:7054";
-    private static final String CA_ADMIN_USERNAME = "admin";
-    private static final String CA_ADMIN_PASSWORD = "adminpw";
+    private static final String CA_URL = System.getenv().getOrDefault("FABRIC_CA_URL", "http://localhost:7054");
+    private static final String CA_ADMIN_USERNAME = System.getenv("FABRIC_CA_ADMIN_USER");
+    private static final String CA_ADMIN_PASSWORD = System.getenv("FABRIC_CA_ADMIN_PASSWORD");
     private static final String CA_CHAINCODE_ORG = "org1";
 
     // Path to the wallet directory
